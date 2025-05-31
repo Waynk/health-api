@@ -28,29 +28,24 @@ const DEPLOYMENT_NAME = "gpt-4o"; // 你部署時取的名稱
 const API_VERSION = "2024-05-01-preview"; // 建議用這個版本
 
 const db = mysql.createPool({
-  host: "127.0.0.1",
-  port: 3306,
-  user: "root",
-  password: "Health1234",
-  database: "ABC",
+  host: process.env.MYSQL_HOST,
+  port: process.env.MYSQL_PORT,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
   timezone: "+08:00",
   waitForConnections: true,
-  connectionLimit: 10, // 你可以依需求調整最大連線數
+  connectionLimit: 10,
   queueLimit: 0,
 });
 
-const exercisePool = db;
-const healthPool = db;
-const pool = db;
-module.exports = pool;
-require("dotenv").config();
+module.exports = db;
 
 (async () => {
   try {
-    // 確認連線是否成功，可以用 getConnection() 試連一次
     const connection = await db.getConnection();
     console.log("資料庫連接成功");
-    connection.release(); // 釋放連線回池中
+    connection.release();
   } catch (err) {
     console.error("資料庫連接失敗:", err.message);
   }
